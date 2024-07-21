@@ -1,0 +1,84 @@
+#include <iostream>
+#include <chrono>
+#include <thread>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class Servo {
+public:
+    void attach(int pin) {}
+    void write(int angle) {}
+};
+
+Servo myservo1;
+Servo myservo2;
+Servo myservo3;
+Servo myservo4;
+Servo myservo5;
+
+int pos = 0;
+int ch = 0;
+
+void scissor() {
+    myservo1.write(180);
+    myservo4.write(180);
+    myservo5.write(180);
+    cout << "Scissor" << endl;
+    this_thread::sleep_for(chrono::milliseconds(100));
+}
+
+void rock() {
+    myservo1.write(180);
+    myservo2.write(180);
+    myservo3.write(180);
+    myservo4.write(180);
+    myservo5.write(180);
+    cout << "Rock" << endl;
+    this_thread::sleep_for(chrono::milliseconds(100));
+}
+
+void paper() {
+    myservo1.write(0);
+    myservo2.write(0);
+    myservo3.write(0);
+    myservo4.write(0);
+    myservo5.write(0);
+    cout << "Paper" << endl;
+    this_thread::sleep_for(chrono::milliseconds(100));
+}
+
+void playIntro() {
+    cout << "Intro--------------------------------/" << endl;
+    this_thread::sleep_for(chrono::milliseconds(100));
+}
+
+int main() {
+    srand(time(0)); // seed random number generator
+
+    myservo1.attach(3);
+    myservo2.attach(4);
+    myservo3.attach(5);
+    myservo4.attach(6);
+    myservo5.attach(7);
+
+    while (true) {
+        ch = rand() % 3;
+        playIntro();
+
+        switch (ch) {
+            case 0:
+                scissor();
+                break;
+            case 1:
+                rock();
+                break;
+            case 2:
+                paper();
+                break;
+        }
+    }
+
+    return 0;
+}
