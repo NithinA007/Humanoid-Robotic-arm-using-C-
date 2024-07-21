@@ -1,0 +1,85 @@
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+using namespace std;
+
+// Servo objects
+class Servo {
+public:
+    void attach(int pin) {}
+    void write(int angle) {}
+};
+
+Servo Servomotor1;
+Servo Servomotor2;
+Servo Servomotor3;
+Servo Servomotor4;
+Servo Servomotor5;
+
+// Servo pin declarations
+const int thumbServoPin = 35;
+const int indexServoPin = 34;
+const int middleServoPin = 33;
+const int ringServoPin = 32;
+const int pinkyServoPin = 25;
+
+// Structure to receive data
+struct struct_message {
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+};
+
+// Create a struct_message object
+struct_message myData;
+
+// Callback function to be executed when data is received
+void OnDataRecv(const struct_message& data) {
+    cout << "Bytes received: " << sizeof(data) << endl;
+    cout << "int: " << data.a << endl;
+    cout << "int: " << data.b << endl;
+    cout << "int: " << data.c << endl;
+    cout << "int: " << data.d << endl;
+    cout << "int: " << data.e << endl;
+    cout << endl;
+}
+
+int main() {
+    // Initialize serial monitor
+    cout << "Initializing serial monitor..." << endl;
+
+    // Initialize servo motors
+    Servomotor1.attach(18);
+    Servomotor2.attach(4);
+    Servomotor3.attach(5);
+    Servomotor4.attach(21);
+    Servomotor5.attach(19);
+
+    // Initialize ESP-NOW
+    cout << "Initializing ESP-NOW..." << endl;
+
+    // Register callback function for when data is received
+    cout << "Registering receive callback..." << endl;
+
+    while (true) {
+        // Receive data
+        struct_message data;
+        // Implement the ESP-NOW receive function here
+        OnDataRecv(data);
+
+        // Update servo motor angles
+        Servomotor1.write(data.a);
+        Servomotor2.write(data.b);
+        Servomotor3.write(data.c);
+        Servomotor4.write(data.d);
+        Servomotor5.write(data.e);
+
+        // Wait for 100ms before updating servo motor angles again
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
+
+    return 0;
+}
