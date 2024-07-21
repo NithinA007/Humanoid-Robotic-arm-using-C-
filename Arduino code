@@ -1,0 +1,57 @@
+#include <iostream>
+
+class Servo {
+public:
+    void attach(int pin) {}
+    void write(int angle) {}
+};
+
+Servo thumbServo;
+Servo indexServo;
+Servo middleServo;
+Servo ringServo;
+Servo pinkyServo;
+
+void setup() {
+    std::cout << "Initializing serial communication..." << std::endl;
+}
+
+void loop() {
+    int analogValue_thumb = 0; // replace with actual analog read value
+    int analogValue_index = 0; // replace with actual analog read value
+    int analogValue_middle = 0; // replace with actual analog read value
+    int analogValue_ring = 0; // replace with actual analog read value
+    int analogValue_pinky = 0; // replace with actual analog read value
+
+    int angle_thumb = map(analogValue_thumb, 0, 1023, 0, 180);
+    int angle_index = map(analogValue_index, 0, 1023, 0, 180);
+    int angle_middle = map(analogValue_middle, 0, 1023, 0, 180);
+    int angle_ring = map(analogValue_ring, 0, 1023, 0, 180);
+    int angle_pinky = map(analogValue_pinky, 0, 1023, 0, 180);
+
+    thumbServo.write(angle_thumb);
+    indexServo.write(angle_index);
+    middleServo.write(angle_middle);
+    ringServo.write(angle_ring);
+    pinkyServo.write(angle_pinky);
+
+    std::cout << "thumb Analog: " << analogValue_thumb << ", thumb Angle: " << angle_thumb << std::endl;
+    std::cout << "index Analog: " << analogValue_index << ", index Angle: " << angle_index << std::endl;
+    std::cout << "middle Analog: " << analogValue_middle << ", middle Angle: " << angle_middle << std::endl;
+    std::cout << "ring Analog: " << analogValue_ring << ", ring Angle: " << angle_ring << std::endl;
+    std::cout << "pinky Analog: " << analogValue_pinky << ", pinky Angle: " << angle_pinky << std::endl;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+}
+
+int map(int value, int inMin, int inMax, int outMin, int outMax) {
+    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+int main() {
+    setup();
+    while (true) {
+        loop();
+    }
+    return 0;
+}
