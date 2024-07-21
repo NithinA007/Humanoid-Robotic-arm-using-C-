@@ -1,0 +1,93 @@
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+using namespace std;
+
+// Define the pins for the potentiometers
+const int thumbPot = 4;
+const int indexPot = 12;
+const int middlePot = 34;
+const int ringPot = 21;
+const int pinkyPot = 15;
+
+// Define the ADC maximum value
+const int ADC_Max = 4096;
+
+// Define the structure to send data
+struct struct_message {
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+};
+
+// Create a struct_message object
+struct_message myData;
+
+// Define the broadcast address (replace with the receiver's MAC address)
+uint8_t broadcastAddress[] = {0x3C, 0x71, 0xBF, 0x52, 0xBF, 0x60};
+
+// Define the callback function for when data is sent
+void OnDataSent(bool success) {
+    cout << "Last Packet Send Status: " << (success ? "Delivery Success" : "Delivery Fail") << endl;
+}
+
+int main() {
+    // Initialize the serial monitor
+    cout << "Initializing serial monitor..." << endl;
+
+    // Initialize the ESP-NOW protocol
+    cout << "Initializing ESP-NOW..." << endl;
+
+    // Register the callback function for when data is sent
+    cout << "Registering send callback..." << endl;
+
+    // Add the peer (replace with the receiver's MAC address)
+    cout << "Adding peer..." << endl;
+
+    while (true) {
+        // Read the potentiometer values
+        int analogThumb = analogRead(thumbPot);
+        analogThumb = map(analogThumb, 0, ADC_Max, 0, 180);
+
+        int analogIndex = analogRead(indexPot);
+        analogIndex = map(analogIndex, 0, ADC_Max, 0, 180);
+
+        int analogMiddle = analogRead(middlePot);
+        analogMiddle = map(analogMiddle, 0, ADC_Max, 0, 180);
+
+        int analogRing = analogRead(ringPot);
+        analogRing = map(analogRing, 0, ADC_Max, 0, 180);
+
+        int analogPinky = analogRead(pinkypot);
+        analogPinky = map(analogPinky, 0, ADC_Max, 0, 180);
+
+        // Set the values to send
+        myData.a = analogThumb;
+        myData.b = analogIndex;
+        myData.c = analogMiddle;
+        myData.d = analogRing;
+        myData.e = analogPinky;
+
+        // Send the data via ESP-NOW
+        bool success = sendData(broadcastAddress, (uint8_t*)&myData, sizeof(myData));
+        OnDataSent(success);
+
+        // Wait for 100ms before sending the next packet
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
+
+    return 0;
+}
+
+int map(int value, int inMin, int inMax, int outMin, int outMax) {
+    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+bool sendData(uint8_t* address, uint8_t* data, int dataSize) {
+    // Implement the ESP-NOW send function here
+    // Return true if the data is sent successfully, false otherwise
+    return true;
+}
